@@ -50,9 +50,17 @@ exports.getCarsById = async (id) => {
 };
 
 exports.createCars = async (data) => {
-  const newCars = await prisma.students.create({
-    id: uuidv4(),
-    ...data,
+  const newCars = await prisma.cars.create({
+    data: {
+      id: uuidv4(), // Menghasilkan id unik
+      ...data, // Spread semua data dari request body ke sini
+      rentPerDay: parseInt(data.rentPerDay), // Parsing rentPerDay jadi integer
+      capacity: parseInt(data.capacity), // Parsing capacity jadi integer
+      availableAt: new Date(data.availableAt), // Parsing availableAt jadi Date
+      available: data.available === "true", // Parsing available jadi boolean
+      year: parseInt(data.year), // Parsing year jadi integer
+      carmodels_id: parseInt(data.carmodels_id), // Parsing carmodels_id jadi integer
+    },
   });
 
   // Convert BigInt fields to string for safe serialization

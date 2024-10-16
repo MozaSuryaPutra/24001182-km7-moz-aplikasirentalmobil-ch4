@@ -14,15 +14,11 @@ exports.getCarsById = async (req, res, next) => {
 };
 
 exports.createCars = async (req, res, next) => {
-  // const requestBody = {
-  //   ...req.body,
-  //   capacity: parseInt(req.body.capacity, 10),
-  //   rentPerDay: parseInt(req.body.rentPerDay, 10),
-  //   year: parseInt(req.body.year, 10),
-  //   available: req.body.available.toLowerCase() === "true",
-  // };
+  const requestBody = {
+    ...req.body,
+  };
 
-  const data = await carService.createCars(req.body, req.files);
+  const data = await carService.createCars(requestBody, req.files);
   successResponse(res, data);
 };
 

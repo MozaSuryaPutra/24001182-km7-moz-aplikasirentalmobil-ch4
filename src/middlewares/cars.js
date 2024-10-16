@@ -53,10 +53,13 @@ exports.validateCreateCars = (req, res, next) => {
       .regex(/^[A-Z]{3}-\d{4}$/, {
         message: "Plate must be in the format 'ABC-1234'",
       }),
-    manufacture: z.string().trim(),
-    model: z.string().trim().min(1, {
-      message: "Model is required",
-    }),
+    carmodels_id: z
+      .string()
+      .trim()
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => !isNaN(val) && val > 0, {
+        message: "Rent per day must be a positive integer",
+      }),
     rentPerDay: z
       .string()
       .trim()
@@ -82,14 +85,13 @@ exports.validateCreateCars = (req, res, next) => {
           "Available date must be in the format YYYY-MM-DDTHH:MM:SS.sssZ",
       }
     ),
-    transmission: z.enum(["Automatic", "Manual"]),
+
     available: z
       .string()
       .transform((val) => val.toLowerCase() === "true")
       .refine((val) => val === true || val === false, {
         message: "Available must be 'true' or 'false'",
       }),
-    type: z.string().trim(),
     year: z
       .string()
       .trim()
@@ -97,18 +99,6 @@ exports.validateCreateCars = (req, res, next) => {
       .refine((val) => !isNaN(val) && val >= 1886, {
         message: "Year must be a valid automobile year",
       }),
-    options: z.union([
-      z.string().min(1, { message: "Options must be a non-empty string" }),
-      z.array(z.string()).refine((arr) => arr.length > 0, {
-        message: "At least one option is required",
-      }),
-    ]),
-    specs: z.union([
-      z.string().min(1, { message: "Specs must be a non-empty string" }),
-      z.array(z.string()).refine((arr) => arr.length > 0, {
-        message: "At least one specification is required",
-      }),
-    ]),
   });
 
   // The file is not required
@@ -157,8 +147,8 @@ exports.validateUpdateCars = (req, res, next) => {
         message: "Plate must be in the format 'ABC-1234'",
       })
       .optional(),
-    manufacture: z.string().trim().optional(),
-    model: z
+
+    carmodels_id: z
       .string()
       .trim()
       .min(1, {
@@ -194,7 +184,6 @@ exports.validateUpdateCars = (req, res, next) => {
         }
       )
       .optional(),
-    transmission: z.enum(["Automatic", "Manual"]).optional(),
     available: z
       .string()
       .min(1, { message: "Available cannot be empty" }) // Validasi untuk input kosong
@@ -206,7 +195,6 @@ exports.validateUpdateCars = (req, res, next) => {
       )
       .transform((val) => val.toLowerCase() === "true")
       .optional(),
-    type: z.string().trim().optional(),
     year: z
       .string()
       .trim()
@@ -214,34 +202,6 @@ exports.validateUpdateCars = (req, res, next) => {
       .refine((val) => !isNaN(val) && val >= 1886, {
         message: "Year must be a valid automobile year",
       })
-      .optional(),
-    options: z
-      .union([
-        z
-          .string()
-          .min(1, { message: "Options must be a non-empty string" })
-          .optional(),
-        z
-          .array(z.string())
-          .refine((arr) => arr.length > 0, {
-            message: "At least one option is required",
-          })
-          .optional(),
-      ])
-      .optional(),
-    specs: z
-      .union([
-        z
-          .string()
-          .min(1, { message: "Specs must be a non-empty string" })
-          .optional(),
-        z
-          .array(z.string())
-          .refine((arr) => arr.length > 0, {
-            message: "At least one specification is required",
-          })
-          .optional(),
-      ])
       .optional(),
   });
 

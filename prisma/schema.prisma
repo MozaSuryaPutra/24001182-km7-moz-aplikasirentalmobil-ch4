@@ -29,7 +29,6 @@ model cars {
   description  String
   availableAt  DateTime  @db.Timestamp(6)
   available    Boolean
-  type         String    @db.VarChar(255)
   year         Int
   carmodels_id BigInt
   capacity     Int
