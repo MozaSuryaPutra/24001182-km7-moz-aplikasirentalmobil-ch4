@@ -81,8 +81,7 @@ exports.validateCreateCars = (req, res, next) => {
         return datePattern.test(date) && !isNaN(Date.parse(date));
       },
       {
-        message:
-          "Available date must be in the format YYYY-MM-DDTHH:MM:SS.sssZ",
+        message: "Available date must be in the format YYYY-MM-DD",
       }
     ),
 
@@ -151,8 +150,9 @@ exports.validateUpdateCars = (req, res, next) => {
     carmodels_id: z
       .string()
       .trim()
-      .min(1, {
-        message: "Model is required",
+      .transform((val) => parseInt(val, 10))
+      .refine((val) => !isNaN(val) && val > 0, {
+        message: "Rent per day must be a positive integer",
       })
       .optional(),
     rentPerDay: z

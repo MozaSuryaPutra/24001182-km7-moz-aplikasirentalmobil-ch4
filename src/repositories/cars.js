@@ -68,21 +68,26 @@ exports.createCars = async (data) => {
   return JSONBigInt.parse(serializedCars);
 };
 
-exports.updateCars = (id, data) => {
-  const index = cars.findIndex((cars) => cars.id === id);
+exports.updateCars = async (id, data) => {
+  const updatedCars = await prisma.cars.update({
+    where: {
+      id: id,
+    },
+    include: {
+      carModels: {
+        include: {
+          type: true,
+          manufactures: true,
+          transmissions: true,
+        },
+      },
+    },
+    data,
+  });
 
-  if (index !== -1) {
-    cars.splice(index, 1, {
-      ...cars[index],
-      ...data,
-    });
-  } else {
-    //TODO
-    return null;
-  }
-  // TODO: Update the json data
-  fs.writeFileSync("./data/cars.json", JSON.stringify(cars, null, 4), "utf-8");
-  return cars[index];
+  // Convert BigInt fields to string for safe serialization
+  const serializedCars = JSONBigInt.stringify(updatedCars);
+  return JSONBigInt.parse(serializedCars);
 };
 
 exports.deleteCarsById = async (id) => {

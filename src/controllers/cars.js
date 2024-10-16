@@ -34,6 +34,9 @@ exports.updateCars = async (req, res, next) => {
       req.body.available !== undefined
         ? req.body.available.toLowerCase() === "true"
         : Cars.available,
+    availableAt: req.body.availableAt
+      ? new Date(req.body.availableAt)
+      : Cars.availableAt,
   };
   const updateTheCars = await carService.updateCars(id, requestBody, req.files);
   successResponse(res, updateTheCars, "Update Student is Success");

@@ -29,23 +29,30 @@ exports.createCars = async (data, file) => {
 };
 
 exports.updateCars = async (id, data, file) => {
-  const Cars = carRepository.getCarsById(id);
-  if (!Cars) {
-    throw new NotFoundError("Cars is not found");
+  // find Car is exist or not (validate the data)
+  const existingCar = carRepository.getCarsById(id);
+  if (!existingCar) {
+    throw new NotFoundError("Car is Not Found!");
   }
 
+  // replicated existing data with new data
+  data = {
+    ...existingCar, // existing Car
+    ...data,
+  };
+
+  // Upload file to image kit
   if (file?.image) {
     data.image = await imageUpload(file.image);
-  } else {
-    data.image = Cars.image;
   }
 
-  const updatedCars = carRepository.updateCars(id, data);
-  if (!updatedCars) {
-    throw new InternalServerError(["Failed to update Cars!"]);
+  // if exist, we will update the Car data
+  const updatedCar = carRepository.updateCars(id, data);
+  if (!updatedCar) {
+    throw new InternalServerError(["Failed to update Car!"]);
   }
 
-  return updatedCars;
+  return updatedCar;
 };
 
 exports.deleteCarsById = async (id) => {
