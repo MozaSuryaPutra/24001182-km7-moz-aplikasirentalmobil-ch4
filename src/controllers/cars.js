@@ -39,8 +39,8 @@ exports.updateCars = async (req, res, next) => {
   successResponse(res, updateTheCars, "Update Student is Success");
 };
 
-exports.deleteCarsById = (req, res, next) => {
+exports.deleteCarsById = async (req, res, next) => {
   const { id } = req.params;
-  const deleteTheCars = carService.deleteCarsById(id);
+  const deleteTheCars = await carService.deleteCarsById(id);
   successResponse(res, deleteTheCars, "Delete Car is Success");
 };

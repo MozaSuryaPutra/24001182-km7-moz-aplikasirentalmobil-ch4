@@ -85,19 +85,11 @@ exports.updateCars = (id, data) => {
   return cars[index];
 };
 
-exports.deleteCarsById = (id) => {
-  const carsIndex = cars.findIndex((cars) => cars.id == id);
-  if (carsIndex < 0) {
-    // If no index found
-    // TODO: make a error class
-    return null;
-  }
+exports.deleteCarsById = async (id) => {
+  const deletedCar = await prisma.cars.delete({
+    where: { id: id },
+  });
 
-  // If the index found
-  const deletedCars = cars.splice(carsIndex, 1);
-
-  // Update the json
-  fs.writeFileSync("./data/cars.json", JSON.stringify(cars, null, 4), "utf-8");
-
-  return deletedCars;
+  const serializedCar = JSONBigInt.stringify(deletedCar);
+  return JSONBigInt.parse(serializedCar);
 };

@@ -48,12 +48,12 @@ exports.updateCars = async (id, data, file) => {
   return updatedCars;
 };
 
-exports.deleteCarsById = (id) => {
-  const carsExist = carRepository.getCarsById(id);
+exports.deleteCarsById = async (id) => {
+  const carsExist = await carRepository.getCarsById(id);
   if (!carsExist) {
     throw new NotFoundError("Cars is not found");
   }
-  const deleteCars = carRepository.deleteCarsById(id);
+  const deleteCars = await carRepository.deleteCarsById(id);
   if (!deleteCars) {
     throw new InternalServerError("Failed to delete Cars");
   }
